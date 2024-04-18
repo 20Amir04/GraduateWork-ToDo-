@@ -1,0 +1,37 @@
+﻿@page
+@model GraduateWork.Pages.todos.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ToDoItem[0].Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ToDoItem) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                    <a asp-page="./Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" class="btn btn-primary" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
