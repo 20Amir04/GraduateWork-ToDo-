@@ -9,6 +9,7 @@ using GraduateWork.Data;
 using GraduateWork.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq.Expressions;
 
 namespace GraduateWork.Pages.todos
 {
@@ -33,13 +34,14 @@ namespace GraduateWork.Pages.todos
         public ToDoItemViewModel ToDoItem { get; set; } = default!;
 
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || _context.ToDoItems == null || ToDoItem == null)
+            if (_context.ToDoItems == null || ToDoItem == null || string.IsNullOrWhiteSpace(ToDoItem.Description))
             {
                 return Page();
             }
+
 
             var dto = new ToDoItem()
             {
@@ -51,6 +53,7 @@ namespace GraduateWork.Pages.todos
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+
         }
     }
 }
