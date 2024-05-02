@@ -1,0 +1,20 @@
+﻿@page
+@model GraduateWork.Pages.todos.ReminderModel
+@{
+    ViewData["Title"] = "Set Reminder";
+}
+
+<h2>Set Reminder</h2>
+
+<form method="post">
+    <div>
+        <label for="reminderDate">Date:</label>
+        <input type="date" id="reminderDate" asp-for="ReminderDate" required>
+    </div>
+    <div>
+        <label for="reminderTime">Time:</label>
+        <input type="time" id="reminderTime" asp-for="ReminderTime" required>
+    </div>
+    <input type="hidden" asp-for="DescriptionId">
+    <button type="submit">Set Reminder</button>
+</form>
