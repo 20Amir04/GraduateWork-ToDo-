@@ -12,6 +12,7 @@ namespace GraduateWork.Data
         }
 
         public DbSet<ToDoItem> ToDoItems { get; set; }
+        public DbSet<Reminder> Reminders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -37,6 +38,34 @@ namespace GraduateWork.Data
                     .IsRequired();
             });
 
+            builder.Entity<Reminder>(b =>
+            {
+                b.ToTable("Reminders", t => t.ExcludeFromMigrations());
+
+                b.Property(r => r.Id)
+                .HasColumnName("id")
+                .IsRequired();
+
+                b.HasOne(r => r.ToDoItem)
+               .WithMany()
+               .HasForeignKey(r => r.ToDoItemId)
+               .IsRequired();
+
+                b.Property(r => r.ReminderDate)
+                .HasColumnName("reminderDate")
+                .IsRequired();
+
+                b.Property(r => r.CreatedAt)
+                .HasColumnName("createdAt")
+                .HasDefaultValueSql("GETDATE()")
+                .IsRequired();
+
+                b.HasOne(r =>r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .IsRequired();
+            });
+            
 
         }
     }

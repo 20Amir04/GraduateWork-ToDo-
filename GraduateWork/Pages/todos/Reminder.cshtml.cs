@@ -47,6 +47,18 @@ namespace GraduateWork.Pages.todos
                 return Page();
             }
 
+            DateTime currentDateTime = DateTime.Now;
+
+            
+            DateTime reminderDateTime = ReminderDate.Date.Add(ReminderTime);
+
+            
+            if (reminderDateTime < currentDateTime)
+            {
+                TempData["ErrorMessage"] = "Reminder cannot be set in the past.";
+                return RedirectToPage("./Index");
+            }
+
             var user = await _userManager.GetUserAsync(User);
 
             if (user != null)
@@ -57,21 +69,34 @@ namespace GraduateWork.Pages.todos
 
                 if (ToDoItem != null && ToDoItem.User == user)
                 {
-                    var reminderDateTime = ReminderDate.Date.Add(ReminderTime);
+                    var reminder = new Reminder
+                    {
+                        ReminderDate = reminderDateTime,
+                        ToDoItemId = DescriptionId,
+                        UserId = user.Id,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    _context.Reminders.Add(reminder);
+
+                    await _context.SaveChangesAsync();
+
+                    reminderDateTime = ReminderDate.Date.Add(ReminderTime);
 
                     var message = ToDoItem.Description;
 
                     await SendEmailReminder(email, reminderDateTime, message);
                 }
             }
-            return RedirectToPage("ReminderSuccess");
+            TempData["SuccessMessage"] = "Reminder set successfully";
+            return RedirectToPage("./Index");         
         }
 
         private async Task SendEmailReminder(string email, DateTime reminderDateTime, string message)
         {
             using (var client = new SmtpClient("smtp.gmail.com", 587))
             {
-                client.Credentials = new NetworkCredential("your.todos.zieit@gmail.com", "1234ZIEIT8765");
+                client.Credentials = new NetworkCredential("your.todos.zieit@gmail.com", "evkasryrxyaexyhh");
                 client.EnableSsl = true;
 
                 var mailMessage = new MailMessage("your.todos.zieit@gmail.com", email)

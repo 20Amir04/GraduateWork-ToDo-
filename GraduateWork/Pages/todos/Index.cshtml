@@ -1,4 +1,4 @@
-﻿@page
+﻿@page 
 @model GraduateWork.Pages.todos.IndexModel
 
 @{
@@ -8,9 +8,41 @@
 
 <h1>Index</h1>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" id="successMessage">
+        @TempData["SuccessMessage"]
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('successMessage').style.display = 'none';
+        }, 5000);
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" id="errorMessage">
+        @TempData["ErrorMessage"]
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('errorMessage').style.display = 'none';
+        }, 5000);
+    </script>
+}
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<form>
+    <p>
+        <input type="text" asp-for="SearchString" />
+        <input type="submit" value="Search"/>
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -25,10 +57,10 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.Importance)
             </td>
             <td>
                     <a asp-page="./Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a> |
                     <a asp-page="./Delete" class="btn btn-primary" asp-route-id="@item.Id">Delete</a> |
                     <a asp-page="./Reminder" class="btn btn-primary" asp-route-id="@item.Id">Reminder</a>
             </td>

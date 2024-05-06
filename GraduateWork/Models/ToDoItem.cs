@@ -7,5 +7,7 @@ namespace GraduateWork.Models
         public int Id { get; set; }
         public string Description { get; set; }
         public IdentityUser User { get; set; }
+
+        public string Importance { get; set; } = string.Empty;
     }
 }

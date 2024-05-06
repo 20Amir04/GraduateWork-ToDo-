@@ -26,12 +26,24 @@ namespace GraduateWork.Pages.todos
 
         public IList<ToDoItem> ToDoItem { get; set; } = default!;
 
+        [BindProperty(SupportsGet = true)]
+        public string? SearchString { get; set; }
+
         public async Task OnGetAsync()
         {
             if (_context.ToDoItems != null)
             {
                 var user = await _userManager.GetUserAsync(User);
                 ToDoItem = await _context.ToDoItems.Where(x => x.User == user).ToListAsync();
+
+                var tasks = from t in _context.ToDoItems
+                            select t;
+                if (!string.IsNullOrEmpty(SearchString))
+                {
+                    tasks = tasks.Where(s => s.Description.Contains(SearchString));
+                }
+
+                ToDoItem = await tasks.ToListAsync();
             }
         }
     }
