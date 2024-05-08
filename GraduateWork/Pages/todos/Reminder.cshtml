@@ -2,9 +2,12 @@
 @model GraduateWork.Pages.todos.ReminderModel
 @{
     ViewData["Title"] = "Set Reminder";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
 <h2>Set Reminder</h2>
+
+<hr />
 
 <form method="post">
     <div>
@@ -16,5 +19,8 @@
         <input type="time" id="reminderTime" asp-for="ReminderTime" required>
     </div>
     <input type="hidden" asp-for="DescriptionId">
-    <button type="submit">Set Reminder</button>
+    <button type="submit" class="btn btn-primary">Set Reminder</button>
 </form>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>

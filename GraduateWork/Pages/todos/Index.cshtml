@@ -2,11 +2,11 @@
 @model GraduateWork.Pages.todos.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Task List";
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Your Tasks</h1>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -40,7 +40,7 @@
 <form>
     <p>
         <input type="text" asp-for="SearchString" />
-        <input type="submit" value="Search"/>
+        <input type="submit" class="btn btn-primary" value="Search" />
     </p>
 </form>
 <table class="table">
@@ -57,7 +57,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
-                @Html.DisplayFor(modelItem => item.Importance)
             </td>
             <td>
                     <a asp-page="./Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |

@@ -1,10 +1,25 @@
 ﻿@page
 @model IndexModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 @{
     ViewData["Title"] = "Home page";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h5>The site was created to allow you to comfortably manage your tasks.</h5>
+        <h5>To learn more about the site's capabilities, visit the <a asp-page="/Guide"> Guide</a> page.</h5>
+        <h5>Have a nice time.</h5>
+    }
+    else
+    {
+        <h5>The site was created to allow you to comfortably manage your tasks.</h5>
+        <h5>Please login or register to start using website.</h5>
+    }
+    
 </div>

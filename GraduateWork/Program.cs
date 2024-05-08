@@ -1,6 +1,8 @@
 using GraduateWork.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using GraduateWork.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
 	.AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
+
+//builder.Services.AddTransient<IEmailSender, EmailSender>();
+//builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 var app = builder.Build();
 
