@@ -55,17 +55,20 @@ namespace GraduateWork.Data
                 .HasColumnName("reminderDate")
                 .IsRequired();
 
+                b.Property(r => r.Completed)
+                    .HasColumnName("completed");
+
                 b.Property(r => r.CreatedAt)
                 .HasColumnName("createdAt")
                 .HasDefaultValueSql("GETDATE()")
                 .IsRequired();
 
-                b.HasOne(r =>r.User)
+                b.HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
                 .IsRequired();
             });
-            
+
 
         }
     }

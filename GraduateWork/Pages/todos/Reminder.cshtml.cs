@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Net.Mail;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace GraduateWork.Pages.todos
 {
@@ -19,11 +20,16 @@ namespace GraduateWork.Pages.todos
     {
         private readonly GraduateWork.Data.ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public ReminderModel(GraduateWork.Data.ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public ReminderModel(
+            GraduateWork.Data.ApplicationDbContext context,
+            UserManager<IdentityUser> userManager,
+            IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         [BindProperty]
@@ -33,10 +39,16 @@ namespace GraduateWork.Pages.todos
         public TimeSpan ReminderTime { get; set; }
 
         [BindProperty]
-        public int DescriptionId { get; set; }
+        public int ToDoItemId { get; set; }
 
-        public IActionResult OnGetAsync()
+        public IActionResult OnGetAsync(int? id)
         {
+            if (!id.HasValue)
+            {
+                throw new Exception("TbI SHO PES");
+            }
+
+            ToDoItemId = id.Value;
             return Page();
         }
 
@@ -49,10 +61,10 @@ namespace GraduateWork.Pages.todos
 
             DateTime currentDateTime = DateTime.Now;
 
-            
+
             DateTime reminderDateTime = ReminderDate.Date.Add(ReminderTime);
 
-            
+
             if (reminderDateTime < currentDateTime)
             {
                 TempData["ErrorMessage"] = "Reminder cannot be set in the past.";
@@ -65,14 +77,14 @@ namespace GraduateWork.Pages.todos
             {
                 var email = user.Email;
 
-                var ToDoItem = await _context.ToDoItems.FindAsync(DescriptionId);
+                var toDoItem = await _context.ToDoItems.FindAsync(ToDoItemId);
 
-                if (ToDoItem != null && ToDoItem.User == user)
+                if (toDoItem != null && toDoItem.User == user)
                 {
                     var reminder = new Reminder
                     {
                         ReminderDate = reminderDateTime,
-                        ToDoItemId = DescriptionId,
+                        ToDoItemId = ToDoItemId,
                         UserId = user.Id,
                         CreatedAt = DateTime.UtcNow
                     };
@@ -81,34 +93,16 @@ namespace GraduateWork.Pages.todos
 
                     await _context.SaveChangesAsync();
 
-                    reminderDateTime = ReminderDate.Date.Add(ReminderTime);
+                    //reminderDateTime = ReminderDate.Date.Add(ReminderTime);
 
-                    var message = ToDoItem.Description;
+                    //var message = ToDoItem.Description;
 
-                    await SendEmailReminder(email, reminderDateTime, message);
+                    //await _emailSender.SendEmailAsync(email, "Reminder", message);
                 }
             }
             TempData["SuccessMessage"] = "Reminder set successfully";
-            return RedirectToPage("./Index");         
+            return RedirectToPage("./Index");
         }
-
-        private async Task SendEmailReminder(string email, DateTime reminderDateTime, string message)
-        {
-            using (var client = new SmtpClient("smtp.gmail.com", 587))
-            {
-                client.Credentials = new NetworkCredential("your.todos.zieit@gmail.com", "evkasryrxyaexyhh");
-                client.EnableSsl = true;
-
-                var mailMessage = new MailMessage("your.todos.zieit@gmail.com", email)
-                {
-                    Subject = $"Reminder for {reminderDateTime}",
-                    Body = message
-                };
-
-                await client.SendMailAsync(mailMessage);
-            }
-        }
-
 
     }
 }

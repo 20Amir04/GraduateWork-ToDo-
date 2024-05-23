@@ -34,10 +34,8 @@ namespace GraduateWork.Pages.todos
             if (_context.ToDoItems != null)
             {
                 var user = await _userManager.GetUserAsync(User);
-                ToDoItem = await _context.ToDoItems.Where(x => x.User == user).ToListAsync();
+                var tasks = _context.ToDoItems.Where(x => x.User == user);
 
-                var tasks = from t in _context.ToDoItems
-                            select t;
                 if (!string.IsNullOrEmpty(SearchString))
                 {
                     tasks = tasks.Where(s => s.Description.Contains(SearchString));
