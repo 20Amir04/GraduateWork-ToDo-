@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings - Copy.Development.json" />
+    <Content Remove="appsettings - Copy.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Services\NewFile.txt" />
     <None Remove="ViewModels\NewFile.txt" />
     <None Remove="ViewModels\ToDoItemViewModel" />
