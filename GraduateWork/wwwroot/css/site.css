@@ -14,5 +14,9 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-image: url('../css/Pictures/background11.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
