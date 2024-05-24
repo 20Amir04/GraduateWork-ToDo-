@@ -5,6 +5,19 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" id="successMessage">
+        @TempData["SuccessMessage"]
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('successMessage').style.display = 'none';
+        }, 5000);
+    </script>
+}
+
 <h2>Set Reminder</h2>
 
 <hr />
@@ -24,3 +37,35 @@
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Reminder[0].ToDoItem)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reminder[0].ReminderDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reminder)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ToDoItem.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReminderDate)
+                </td>
+                <td>
+                    <a asp-page="./EditReminder" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./DeleteReminder" class="btn btn-primary" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> 

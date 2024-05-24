@@ -12,6 +12,7 @@ using System.Net.Mail;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraduateWork.Pages.todos
 {
@@ -31,6 +32,7 @@ namespace GraduateWork.Pages.todos
             _userManager = userManager;
             _emailSender = emailSender;
         }
+        public IList<Reminder> Reminder { get; set; } = default!;
 
         [BindProperty]
         public DateTime ReminderDate { get; set; }
@@ -41,11 +43,18 @@ namespace GraduateWork.Pages.todos
         [BindProperty]
         public int ToDoItemId { get; set; }
 
-        public IActionResult OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (_context.Reminders != null)
+            {
+                Reminder = await _context.Reminders
+                .Include(r => r.ToDoItem)
+                .Include(r => r.User).ToListAsync();
+            }
+
             if (!id.HasValue)
             {
-                throw new Exception("TbI SHO PES");
+                return Page();
             }
 
             ToDoItemId = id.Value;
@@ -92,17 +101,13 @@ namespace GraduateWork.Pages.todos
                     _context.Reminders.Add(reminder);
 
                     await _context.SaveChangesAsync();
-
-                    //reminderDateTime = ReminderDate.Date.Add(ReminderTime);
-
-                    //var message = ToDoItem.Description;
-
-                    //await _emailSender.SendEmailAsync(email, "Reminder", message);
                 }
             }
             TempData["SuccessMessage"] = "Reminder set successfully";
             return RedirectToPage("./Index");
         }
+
+       
 
     }
 }
