@@ -45,19 +45,21 @@ namespace GraduateWork.Pages.todos
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
+            if (!id.HasValue)
+            {
+                return RedirectToPage("./Index");
+            }
+
             if (_context.Reminders != null)
             {
                 Reminder = await _context.Reminders
-                .Include(r => r.ToDoItem)
-                .Include(r => r.User).ToListAsync();
+                    .Include(r => r.ToDoItem)
+                    .Where(x => x.ToDoItem.Id == id.Value)
+                    .ToListAsync();
             }
-
-            if (!id.HasValue)
-            {
-                return Page();
-            }
-
+            
             ToDoItemId = id.Value;
+
             return Page();
         }
 
@@ -95,7 +97,7 @@ namespace GraduateWork.Pages.todos
                         ReminderDate = reminderDateTime,
                         ToDoItemId = ToDoItemId,
                         UserId = user.Id,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.Now
                     };
 
                     _context.Reminders.Add(reminder);
@@ -107,7 +109,7 @@ namespace GraduateWork.Pages.todos
             return RedirectToPage("./Index");
         }
 
-       
+
 
     }
 }

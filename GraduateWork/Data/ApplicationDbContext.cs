@@ -49,6 +49,7 @@ namespace GraduateWork.Data
                 b.HasOne(r => r.ToDoItem)
                .WithMany()
                .HasForeignKey(r => r.ToDoItemId)
+               .OnDelete(DeleteBehavior.Cascade)
                .IsRequired();
 
                 b.Property(r => r.ReminderDate)

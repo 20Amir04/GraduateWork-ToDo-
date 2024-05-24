@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GraduateWork.Data;
 using GraduateWork.Models;
+using GraduateWork.ViewModels;
 
 namespace GraduateWork.Pages.todos
 {
@@ -21,7 +22,7 @@ namespace GraduateWork.Pages.todos
         }
 
         [BindProperty]
-        public Reminder Reminder { get; set; } = default!;
+        public ReminderViewModel Reminder { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -38,9 +39,11 @@ namespace GraduateWork.Pages.todos
                 return NotFound();
             }
 
-            Reminder = reminder;
-            ViewData["ToDoItemId"] = new SelectList(_context.ToDoItems, "Id", "Description");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            Reminder = new ReminderViewModel()
+            {
+                Id = reminder.Id,
+                ReminderDate = reminder.ReminderDate
+            };
             return Page();
         }
 
@@ -51,7 +54,23 @@ namespace GraduateWork.Pages.todos
                 return Page();
             }
 
-            _context.Attach(Reminder).State = EntityState.Modified;
+            DateTime currentDateTime = DateTime.Now;
+
+
+
+            if (Reminder.ReminderDate < currentDateTime)
+            {
+                TempData["ErrorMessage"] = "Reminder cannot be set in the past.";
+                return RedirectToPage("./Reminder");
+            }
+
+            var reminder = await _context.Reminders.FirstOrDefaultAsync(m => m.Id == Reminder.Id);
+            if (reminder == null)
+            {
+                return NotFound();
+            }
+
+            reminder.ReminderDate = Reminder.ReminderDate;
 
             try
             {
@@ -68,8 +87,8 @@ namespace GraduateWork.Pages.todos
                     throw;
                 }
             }
-            TempData["SuccessMessage"] = "Reminder time has been changed";
-            return RedirectToPage("./Index");
+            TempData["SuccessEditMessage"] = "Reminder time has been changed";
+            return RedirectToPage("./Reminder");
         }
 
         private bool ReminderExists(int id)

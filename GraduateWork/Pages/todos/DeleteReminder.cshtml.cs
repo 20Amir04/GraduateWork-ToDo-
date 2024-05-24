@@ -56,7 +56,7 @@ namespace GraduateWork.Pages.todos
                 _context.Reminders.Remove(Reminder);
                 await _context.SaveChangesAsync();
             }
-
+            TempData["SuccessDeleteMessage"] = "Reminder has been deleted!";
             return RedirectToPage("./Reminder");
         }
     }

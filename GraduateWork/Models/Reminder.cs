@@ -16,7 +16,7 @@ namespace GraduateWork.Models
         [Display(Name = "Reminder time:")]
         public DateTime ReminderDate { get; set; }
 
-        [Display(Name = "Created at:")]
+        [Display(Name = "Created on:")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public bool? Completed { get; set; }
     }

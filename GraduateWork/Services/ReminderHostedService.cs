@@ -52,6 +52,7 @@ public class ReminderHostedService : BackgroundService
         {
             await emailSender.SendEmailAsync(reminder.User.Email, "Reminder", reminder.ToDoItem.Description);
             reminder.Completed = true;
+            dbContext.Remove(reminder);
         }
 
         await dbContext.SaveChangesAsync();
